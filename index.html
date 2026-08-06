@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>PARC Score Reporting</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <header>
+
+        <h1>PARC Score Reporting</h1>
+
+        <p class="subtitle">
+            Enter match results and generate formatted score reporting.
+        </p>
+
+    </header>
+
+    <main>
+
+        <section class="card">
+
+            <h2>Event Information</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label for="playerName">
+                        Your Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="playerName"
+                        autocomplete="name">
+
+                </div>
+
+                <div class="field">
+
+                    <label for="opponentName">
+                        Opponent's Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="opponentName">
+
+                </div>
+
+                <div class="field">
+
+                    <label for="eventType">
+                        Event Type
+                    </label>
+
+                    <select id="eventType">
+
+                        <option value="">
+                            Select Event Type...
+                        </option>
+
+                        <option value="Tournament">
+                            Tournament
+                        </option>
+
+                        <option value="League">
+                            League
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div
+                    class="field hidden"
+                    id="sportSelector">
+
+                    <label for="eventSport">
+                        Sport
+                    </label>
+
+                    <select id="eventSport">
+
+                        <option value="">
+                            Select Sport...
+                        </option>
+
+                        <option value="Box Tennis">
+                            Box Tennis
+                        </option>
+
+                        <option value="Spinminton">
+                            Spinminton
+                        </option>
+
+                        <option value="Pickleball">
+                            Pickleball
+                        </option>
+
+                        <option value="Table Tennis">
+                            Table Tennis
+                        </option>
+
+                        <option value="Multi Sport">
+                            Multi Sport
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+	<section id="statusSection" class="card hidden">
+
+	    <div id="eventStatus"></div>
+
+	</section>
+        <section
+            id="matchesContainer"
+            class="card hidden">
+
+            <h2>
+                Match Scores
+            </h2>
+
+            <!--
+                Filled dynamically by app.js
+            -->
+
+        </section>
+
+        <section
+            id="reportSection"
+            class="card hidden">
+
+            <div class="reportHeader">
+
+                <h2>
+                    Generated Report
+                </h2>
+
+                <div class="buttonRow">
+
+                    <button
+                        id="copyButton"
+                        type="button">
+
+                        Copy Report
+
+                    </button>
+
+                    <button
+                        id="resetButton"
+                        type="button">
+
+                        New Report
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <textarea
+                id="reportOutput"
+                readonly
+                spellcheck="false"></textarea>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/scoring.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
