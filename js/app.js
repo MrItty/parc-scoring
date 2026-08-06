@@ -757,7 +757,7 @@ function buildReport() {
     }
 
 
-    text += "\n";
+    //text += "\n";
 
 
     getCompletedMatches()
@@ -783,7 +783,7 @@ function buildReport() {
                 formatMatchScore(match, winner);
 
 
-            text += "\n\n";
+            text += "\n";
 
 
         });
