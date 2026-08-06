@@ -290,6 +290,7 @@ function renderSet(match, set, index) {
     data-set="${setNumber}">
 
     <h4>Set ${setNumber}</h4>
+    <div class="setError hidden"></div>
 
     <div class="scoreGrid">
 
@@ -365,6 +366,10 @@ function scoreChanged() {
 
     validateSetInput(set);
 
+    updateSetValidationMessage(
+        match,
+        setNumber
+    );
 
     updateThirdSetVisibility(match);
 
@@ -628,6 +633,12 @@ function updateSetVisibility(match) {
         else {
 
             card.addClass("hidden");
+            card
+                .find(".setError")
+                .text("")
+                .addClass("hidden");
+        
+            card.removeClass("hasError");
 
         }
 
@@ -849,5 +860,100 @@ function getPlayerName(player) {
     return player === "you"
         ? eventData.player
         : eventData.opponent;
+
+}
+
+
+
+function updateSetValidationMessage(match, setNumber) {
+
+    const set =
+        match.sets[setNumber - 1];
+
+
+    const card =
+        $(`.setCard[data-match="${match.matchNumber}"][data-set="${setNumber}"]`);
+
+
+    const error =
+        card.find(".setError");
+
+
+    card.removeClass("hasError");
+
+
+    if (
+        set.you === "" ||
+        set.opponent === ""
+    ) {
+
+        error
+            .addClass("hidden")
+            .text("");
+
+        return;
+
+    }
+
+
+    const you =
+        Number(set.you);
+
+    const opponent =
+        Number(set.opponent);
+
+
+    let message = "";
+
+
+    const winner =
+        Math.max(you, opponent);
+
+    const loser =
+        Math.min(you, opponent);
+
+
+    if (winner < 11) {
+
+        message =
+            "One player must score at least 11.";
+
+    }
+    else if (winner === loser) {
+
+        message =
+            "A set cannot end in a tie.";
+
+    }
+    else if (winner === 11 && loser > 9) {
+
+        message =
+            "An 11-point win must be by at least 2.";
+
+    }
+    else if (winner > 11 && loser !== winner - 2) {
+
+        message =
+            "Scores above 11 must win by exactly 2.";
+
+    }
+
+
+    if (message === "") {
+
+        error
+            .addClass("hidden")
+            .text("");
+
+        return;
+
+    }
+
+
+    card.addClass("hasError");
+
+    error
+        .removeClass("hidden")
+        .text(message);
 
 }

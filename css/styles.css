@@ -472,3 +472,27 @@ button:hover{
     color: var(--primary);
 
 }
+
+.setError {
+
+    color: #b00020;
+
+    font-size: .9rem;
+
+    font-weight: 600;
+
+    margin-bottom: .6rem;
+
+}
+
+.setError.hidden {
+
+    display: none;
+
+}
+
+.setCard.hasError {
+
+    border: 2px solid #b00020;
+
+}
