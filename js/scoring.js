@@ -161,6 +161,10 @@ function getEventWinner() {
         if (!isTournamentComplete())
             return null;
 
+        if (eventData.sport === "Multi Sport") {
+	    return getLeagueWinner(); //MS Tournament has same rules as League
+	}
+
 
         const score =
             getEventScore();
@@ -304,9 +308,9 @@ function validateSetInput(set) {
 
 
 
-function formatSetScore(set, matchWinner) {
+function formatSetScore(set, eventWinner) {
 
-    if (matchWinner === "you") {
+    if (eventWinner === "you") {
 
         return `${set.you}-${set.opponent}`;
 
@@ -318,13 +322,9 @@ function formatSetScore(set, matchWinner) {
 }
 
 
-function formatMatchScore(match) {
+function formatMatchScore(match, eventWinner) {
 
-    const winner =
-        getMatchWinner(match);
-
-
-    if (!winner)
+    if (!eventWinner)
         return "";
 
 
@@ -335,7 +335,7 @@ function formatMatchScore(match) {
         .filter(set => set.valid)
 
         .map(set =>
-            formatSetScore(set, winner)
+            formatSetScore(set, eventWinner)
         )
 
         .join("; ");
@@ -513,8 +513,18 @@ function getLeagueWinner() {
     }
 
 
-    return "tie";
-
+    const yourName =
+        eventData.player.trim().toLowerCase();
+    
+    const opponentName =
+        eventData.opponent.trim().toLowerCase();
+    
+    return (
+        yourName < opponentName
+    )
+        ? "you"
+        : "opponent";
+    
 }
 
 

@@ -780,7 +780,7 @@ function buildReport() {
 
 
             text +=
-                formatMatchScore(match);
+                formatMatchScore(match, winner);
 
 
             text += "\n\n";
