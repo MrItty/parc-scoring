@@ -748,11 +748,11 @@ function buildReport() {
 
 
     text +=
-        `Winner: ${getPlayerName(winner)}\n`;
+        `Winner: @${getPlayerName(winner)}\n`;
 
 
     text +=
-        `Loser: ${getPlayerName(loser)}\n`;
+        `Loser: @${getPlayerName(loser)}\n`;
 
 
     text +=
