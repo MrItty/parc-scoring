@@ -59,6 +59,8 @@ function initializePage() {
             leaguePlayedChanged
     );
 
+    initializeMatchDragging();
+
 }
 
 function eventTypeChanged() {
@@ -233,8 +235,35 @@ function renderMatch(match) {
         <div class="matchCard"
              data-match="${match.matchNumber}">
 
-            <h3>${title}</h3>
-${eventData.eventType === "League" ? `
+            ${(
+		    eventData.eventType === "League" || 
+		    eventData.sport === "Multi Sport"
+            ) ? `
+            <div class="matchHeader">
+
+                <div>
+            
+	            <h3>${title}</h3>
+                </div>
+
+                <button
+                    type="button"
+                    class="dragHandle"
+                    aria-label="Drag to reorder this match"
+                    title="Drag to reorder">
+        ☰
+                </button>
+
+            </div>
+
+	    ` : `
+
+	    <h3>${title}</h3>
+
+	    `}
+
+
+		${eventData.eventType === "League" ? `
 
 <div class="playedToggle">
 
@@ -275,6 +304,324 @@ ${eventData.eventType === "League" ? `
     `;
 
     return html;
+
+}
+
+
+let draggedMatchNumber = null;
+
+
+function initializeMatchDragging() {
+
+    $(document)
+        .on("pointerdown", ".dragHandle", matchDragStart);
+
+    $(document)
+        .on("pointermove", matchDragMove);
+
+    $(document)
+        .on("pointerup pointercancel", matchDragEnd);
+
+}
+
+function matchDragStart(event) {
+
+    if (
+        eventData.eventType !== "League" &&
+        eventData.sport !== "Multi Sport"
+    ) {
+        return;
+    }
+
+
+    const card =
+        $(this).closest(".matchCard");
+
+
+    draggedMatchNumber =
+        Number(card.data("match"));
+
+
+    card.addClass("dragging");
+
+
+    event.preventDefault();
+
+}
+
+
+function matchDragMove(event) {
+
+    if (draggedMatchNumber === null)
+        return;
+
+
+    const draggedCard =
+        $(
+            `.matchCard[data-match="${draggedMatchNumber}"]`
+        );
+
+
+    if (!draggedCard.length)
+        return;
+
+
+    const cards =
+        $("#matchesContainer .matchCard")
+            .not(draggedCard);
+
+
+    let targetCard = null;
+
+
+    cards.each(function () {
+
+        const rect =
+            this.getBoundingClientRect();
+
+
+        const midpoint =
+            rect.top + (rect.height / 2);
+
+
+        if (event.clientY < midpoint) {
+
+            targetCard = this;
+
+            return false;
+
+        }
+
+    });
+
+
+    cards.removeClass("dragOver");
+
+
+    if (targetCard) {
+
+        $(targetCard)
+            .addClass("dragOver");
+
+    }
+
+
+    event.preventDefault();
+
+}
+
+
+function matchDragEnd(event) {
+
+    if (draggedMatchNumber === null)
+        return;
+
+
+    const draggedCard =
+        $(
+            `.matchCard[data-match="${draggedMatchNumber}"]`
+        );
+
+
+    if (!draggedCard.length) {
+
+        draggedMatchNumber = null;
+
+        return;
+
+    }
+
+
+    const cards =
+        $("#matchesContainer .matchCard")
+            .not(draggedCard);
+
+
+    let targetCard = null;
+
+
+    cards.each(function () {
+
+        const rect =
+            this.getBoundingClientRect();
+
+
+        const midpoint =
+            rect.top + (rect.height / 2);
+
+
+        if (event.clientY < midpoint) {
+
+            targetCard = this;
+
+            return false;
+
+        }
+
+    });
+
+
+    if (targetCard) {
+
+        $(targetCard)
+            .before(draggedCard);
+
+    }
+    else {
+
+        $("#matchesContainer")
+            .append(draggedCard);
+
+    }
+
+
+    draggedCard.removeClass("dragging");
+
+
+    $("#matchesContainer .matchCard")
+        .removeClass("dragOver");
+
+
+    reorderMatches();
+
+
+    draggedMatchNumber = null;
+
+
+    event.preventDefault();
+
+}
+
+function reorderMatches() {
+
+    const orderedMatches = [];
+
+
+    $("#matchesContainer .matchCard")
+        .each(function () {
+
+            const oldNumber =
+                Number($(this).data("match"));
+
+
+            const match =
+                eventData.matches.find(
+                    m => m.matchNumber === oldNumber
+                );
+
+
+            if (match)
+                orderedMatches.push(match);
+
+        });
+
+
+    if (
+        orderedMatches.length !==
+        eventData.matches.length
+    ) {
+        return;
+    }
+
+
+    eventData.matches =
+        orderedMatches;
+
+
+    eventData.matches.forEach(
+        function (match, index) {
+
+            match.matchNumber =
+                index + 1;
+
+        }
+    );
+
+
+    updateMatchNumbers();
+
+
+    updateReport();
+
+}
+
+function updateMatchNumbers() {
+
+    $("#matchesContainer .matchCard")
+        .each(function (index) {
+
+            const matchNumber =
+                index + 1;
+
+
+            $(this)
+                .attr(
+                    "data-match",
+                    matchNumber
+                )
+                .data(
+                    "match",
+                    matchNumber
+                );
+
+
+            /*
+             * Update the visible Match # heading
+             * only when this is a numbered
+             * Multi Sport/League card.
+             *
+             * League/Multi Sport normally display
+             * the sport name instead, so this
+             * primarily keeps data attributes
+             * synchronized.
+             */
+
+            $(this)
+                .find(".setCard")
+                .each(function () {
+
+                    $(this)
+                        .attr(
+                            "data-match",
+                            matchNumber
+                        )
+                        .data(
+                            "match",
+                            matchNumber
+                        );
+
+                });
+
+
+            $(this)
+                .find(".scoreInput")
+                .each(function () {
+
+                    $(this)
+                        .attr(
+                            "data-match",
+                            matchNumber
+                        )
+                        .data(
+                            "match",
+                            matchNumber
+                        );
+
+                });
+
+
+            $(this)
+                .find(".playedCheckbox")
+                .attr(
+                    "data-match",
+                    matchNumber
+                )
+                .data(
+                    "match",
+                    matchNumber
+                );
+
+        });
 
 }
 
