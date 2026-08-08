@@ -561,10 +561,30 @@ button:hover{
 
 .matchCard.dragging {
 
-    opacity: 0.5;
+    position: fixed;
 
+    z-index: 1000;
+
+    pointer-events: none;
+
+    opacity: 0.9;
+
+    width: var(--drag-width);
+
+    box-sizing: border-box;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+    left: var(--drag-x);
+
+    top: var(--drag-y);
 }
 
+.matchCard.dragPlaceholder {
+
+    visibility: hidden;
+
+}
 
 /*
  * Where the dragged card will be dropped.

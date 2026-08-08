@@ -342,13 +342,46 @@ function matchDragStart(event) {
         Number(card.data("match"));
 
 
+    const rect =
+        card[0].getBoundingClientRect();
+
+
+    card.css(
+        "--drag-width",
+        `${rect.width}px`
+    );
+
+
+    card.data(
+        "drag-offset-x",
+        event.clientX - rect.left
+    );
+
+
+    card.data(
+        "drag-offset-y",
+        event.clientY - rect.top
+    );
+
+
+    card.css(
+        "--drag-x",
+        `${rect.left}px`
+    );
+
+
+    card.css(
+        "--drag-y",
+        `${rect.top}px`
+    );
+
+
     card.addClass("dragging");
 
 
     event.preventDefault();
 
 }
-
 
 function matchDragMove(event) {
 
@@ -364,6 +397,34 @@ function matchDragMove(event) {
 
     if (!draggedCard.length)
         return;
+
+
+    const offsetX =
+        draggedCard.data("drag-offset-x");
+
+
+    const offsetY =
+        draggedCard.data("drag-offset-y");
+
+
+    const x =
+        event.clientX - offsetX;
+
+
+    const y =
+        event.clientY - offsetY;
+
+
+    draggedCard.css(
+        "--drag-x",
+        `${x}px`
+    );
+
+
+    draggedCard.css(
+        "--drag-y",
+        `${y}px`
+    );
 
 
     const cards =
@@ -409,7 +470,6 @@ function matchDragMove(event) {
     event.preventDefault();
 
 }
-
 
 function matchDragEnd(event) {
 
@@ -461,6 +521,21 @@ function matchDragEnd(event) {
     });
 
 
+    draggedCard.removeClass("dragging");
+
+
+    draggedCard.css(
+        "--drag-x",
+        ""
+    );
+
+
+    draggedCard.css(
+        "--drag-y",
+        ""
+    );
+
+
     if (targetCard) {
 
         $(targetCard)
@@ -473,9 +548,6 @@ function matchDragEnd(event) {
             .append(draggedCard);
 
     }
-
-
-    draggedCard.removeClass("dragging");
 
 
     $("#matchesContainer .matchCard")
