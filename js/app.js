@@ -1178,8 +1178,7 @@ function buildReport() {
         `Event Type: ${eventData.eventType}\n`;
 
 
-    if (eventData.eventType === "Tournament" &&
-        eventData.sport !== "Multi Sport") {
+    if (eventData.eventType === "Tournament") {
 
         text +=
             `Event Sport: ${eventData.sport}\n`;
